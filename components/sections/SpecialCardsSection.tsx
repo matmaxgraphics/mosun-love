@@ -67,7 +67,13 @@ export function SpecialCardsSection() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   return (
-    <div className="w-full min-h-screen bg-black px-6 py-20 flex flex-col items-center justify-center">
+    <motion.div 
+      className="w-full min-h-screen bg-black px-6 py-20 flex flex-col items-center justify-center"
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
+      viewport={{ once: false }}
+    >
       <motion.h2
         className="font-playfair text-4xl md:text-5xl text-white mb-12 text-center font-light"
         initial={{ opacity: 0, y: -20 }}
@@ -186,6 +192,6 @@ export function SpecialCardsSection() {
           </motion.button>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }
