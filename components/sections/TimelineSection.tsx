@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import Image from 'next/image';
+import { ImageGallery } from '@/components/ImageGallery';
 
 const timelineYears = [
  
@@ -34,6 +35,9 @@ const timelineYears = [
 
 export function TimelineSection() {
   const [activeYear, setActiveYear] = useState(0);
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [selectedYear, setSelectedYear] = useState(0);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   return (
     <div className="relative w-full">
@@ -98,14 +102,19 @@ export function TimelineSection() {
                     : 'grid-cols-2 md:grid-cols-4'
                 } gap-4 max-w-3xl mx-auto`}>
                   {item.images.map((image, imgIndex) => (
-                    <motion.div
+                    <motion.button
                       key={imgIndex}
                       initial={{ opacity: 0, scale: 0.8 }}
                       whileInView={{ opacity: 1, scale: 1 }}
                       transition={{ delay: imgIndex * 0.1 }}
                       viewport={{ once: false }}
-                      className="relative aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-2xl group"
+                      className="relative aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-2xl group cursor-pointer"
                       whileHover={{ scale: 1.05 }}
+                      onClick={() => {
+                        setSelectedYear(index);
+                        setSelectedImageIndex(imgIndex);
+                        setGalleryOpen(true);
+                      }}
                     >
                       <Image
                         src={`/images/${image}`}
@@ -119,7 +128,16 @@ export function TimelineSection() {
                         whileHover={{ opacity: 1 }}
                         transition={{ duration: 0.3 }}
                       />
-                    </motion.div>
+                      
+                      {/* Click indicator */}
+                      <motion.div
+                        className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity"
+                        initial={{ opacity: 0 }}
+                        whileHover={{ opacity: 1 }}
+                      >
+                        <div className="text-white text-4xl">🔍</div>
+                      </motion.div>
+                    </motion.button>
                   ))}
                 </div>
               </motion.div>
@@ -151,6 +169,15 @@ export function TimelineSection() {
           </motion.div>
         </motion.div>
       ))}
+
+      {/* Image Gallery Modal */}
+      <ImageGallery
+        images={timelineYears[selectedYear]?.images || []}
+        year={timelineYears[selectedYear]?.year || 0}
+        isOpen={galleryOpen}
+        onClose={() => setGalleryOpen(false)}
+        initialImageIndex={selectedImageIndex}
+      />
     </div>
   );
 }
